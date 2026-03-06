@@ -1,0 +1,31 @@
+Compute a Resume↔JD match using BOTH:
+1) Quantitative scoring (skills/experience/education/title fit)
+2) Qualitative scoring (hiring_manager_inputs rubric)
+
+Inputs:
+RESUME_JSON:
+{resume_json}
+
+JD_JSON:
+{jd_json}
+
+HIRING_MANAGER_INPUTS:
+{hmi_json}
+
+Return JSON exactly matching this schema:
+{schema_json}
+
+Guidance:
+- skills_score: prioritize mandatory coverage; optional adds benefit; bonus is capped.
+- experience_score: compare resume years vs JD min_years_experience if present; compute experience_gap_years.
+- education_score: compare JD degree_required vs resume education entries.
+- title_score: compare JD role_title vs most recent resume job_title if available.
+- qualitative_score: compute from rubric weighted average (1..5 → 0..100). If no rubric, return 50.
+- quantitative_score: weighted average of (skills, experience, education, title) with default weights: skills 55%, exp 20%, edu 15%, title 10%.
+- overall_score: blend quantitative_score and qualitative_score using weights in hiring_manager_inputs.
+- shortlist: true only if overall_score >= 65 AND (if knockout_missing_mandatory then missing_mandatory is empty).
+- recommendation:
+    SHORTLIST if shortlist==true and overall_score>=75
+    SCREEN if overall_score in [65, 74] or shortlist false due to non-knockout reasons
+    REJECT if overall_score < 65 or knockout triggered
+- rationale: 3–8 bullets, no fluff, grounded only.
