@@ -19,6 +19,8 @@ def norm_skill(s: str) -> str:
         "spark sql": "apache spark",
         "amazon web services": "aws",
         "aws cloud": "aws",
+        "b.tech": "bachelor of technology",
+        "m.tech": "master of technology",
     }
     return replacements.get(s, s)
 

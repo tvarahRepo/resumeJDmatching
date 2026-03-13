@@ -34,12 +34,13 @@ def extract_resume_skills(resume_json: dict) -> Set[str]:
             buckets.extend([v for v in values if isinstance(v, str)])
 
     for exp in resume.get("work_experience_info", []) or []:
-        desc = norm_text(exp.get("role_description") or "")
+        desc = norm_text((exp.get("role_description") or "") + " " + (exp.get("experience_insights") or ""))
         inferred = []
         for token in [
             "pyspark", "pandas", "numpy", "scipy", "scikit-learn", "jupyter",
             "linux", "aws", "apache spark", "spark", "etl", "eda",
-            "machine learning", "statistics", "hypothesis testing"
+            "machine learning", "statistics", "hypothesis testing",
+            "feature engineering", "model monitoring", "docker", "airflow", "mlflow"
         ]:
             if token in desc:
                 inferred.append(token)
@@ -93,10 +94,20 @@ def extract_resume_education_blob(resume_json: dict) -> str:
     resume = _resume_root(resume_json)
     parts = []
     for edu in resume.get("education_info", []) or []:
-        for key in ["degree", "field_of_study", "education_level", "institution_name"]:
+        for key in ["degree", "field_of_study", "education_level", "institution_name", "institution_type"]:
             value = edu.get(key)
             if isinstance(value, str) and value.strip():
                 parts.append(value.strip().lower())
+    return " ".join(parts)
+
+
+def extract_resume_company_blob(resume_json: dict) -> str:
+    resume = _resume_root(resume_json)
+    parts = []
+    for exp in resume.get("work_experience_info", []) or []:
+        value = exp.get("company_name")
+        if isinstance(value, str) and value.strip():
+            parts.append(value.strip().lower())
     return " ".join(parts)
 
 
