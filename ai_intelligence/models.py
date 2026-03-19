@@ -160,6 +160,7 @@ class MatchResult(BaseModel):
     tile_reasons: TileReasons
     quick_view: QuickView
     semantic_skill_analysis: Dict[str, SemanticSkillEvidence] = Field(default_factory=dict)
+    screening_questions: List[Dict[str, Any]] = Field(default_factory=list)
 
     shortlist: bool
     recommendation: Literal["SHORTLIST", "SCREEN", "REJECT"]
